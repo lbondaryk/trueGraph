@@ -5,29 +5,14 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Force Directed Graph" name="description">
     <style>
-        .node circle {
-          cursor: pointer;
-          stroke: #3182bd;
-          stroke-width: 1.5px;
-        }
+       
 
-        .node text {
-          font: 12px sans-serif;
-          pointer-events: none;
-          text-anchor: middle;
-        }
-
-        line.link {
-          fill: none;
-          stroke: #9ecae1;
-          stroke-width: 1.5px;
-        }
     </style>
 
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
 <body>
-  <div class="trueNum" style="border: 1px solid blue; width: 600px">
+  <div class="trueNum" style="border: 1px solid #000033; padding: 2px; margin: 5px; width: 500px; font: 10px serif">
     Truenumber: 
     </div>
     <div class="nodeGraph" maxwidth="600" style="float: left">
@@ -107,8 +92,8 @@
     }
     ]
    
-var width = 600;
-var height = 600;
+var width = 500;
+var height = 500;
 var radius = Math.min(width, height) / 2;
 
 var svg = d3.select(".nodeGraph").append("svg")
@@ -118,9 +103,13 @@ var svg = d3.select(".nodeGraph").append("svg")
     .attr("transform", "translate(" +
                     (width  / 2) + "," +
                     (height / 2) + ")");
-  //.style('stroke', '#000033')
-  // .style('stroke-width', 2)
-   ;
+ 
+
+d3.select('svg').append('text').attr('class','node')
+    .style({font: 'bold 16px sans-serif', color: 'green', 'text-anchor': 'middle'})
+    .attr("transform", "translate(" +
+                    (width  / 2) + "," +
+                    (height / 2) + ")");
 
  // Define the scales that will translate data values
         // into visualization properties. The "x" scale
@@ -258,8 +247,9 @@ var svg = d3.select(".nodeGraph").append("svg")
         // hierarchy is subject -> qualifier -> description.
         // At the description level, we're only interested
         // in a count of the data points.
+        var rootName = "Metals"
         var hierarchy = {
-            key: "Metals",
+            key: rootName,
             values: d3.nest()
                 .key(function(d) { return d.subject; })
                 .key(function(d) { return d.qualifier; })
@@ -269,6 +259,8 @@ var svg = d3.select(".nodeGraph").append("svg")
                 })
                 .entries(truenums)
         };
+
+         d3.select('.node').text(rootName);
 
         // Construct the visualization.
         var path = svg.selectAll("path")
@@ -283,7 +275,7 @@ var svg = d3.select(".nodeGraph").append("svg")
             .on("mouseout", mouseout);
 
         // Add a container for the tooltip.
-        var tooltip = d3.select('.trueNum').html("text")
+        var tooltip = d3.select('.trueNum').html("Hover over segments to see truenumbers")
             //.attr("font-size", 12)
             //.attr("fill", "#000")
             //.attr("fill-opacity", 0)
@@ -301,6 +293,7 @@ var svg = d3.select(".nodeGraph").append("svg")
             // Hide the tooltip since the
             // path "underneath" the cursor
             // will likely have changed.
+             d3.select('.node').text(d.key);
             mouseout();
         };
 
