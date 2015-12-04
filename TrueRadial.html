@@ -23,6 +23,8 @@
           stroke-width: 1.5px;
         }
     </style>
+
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
 <body>
   <div class="trueNum" style="border: 1px solid blue; width: 600px">
@@ -31,7 +33,6 @@
     <div class="nodeGraph" maxwidth="600" style="float: left">
     </div>
     
-    <script src="js/d3.min.js"></script>
     <script>
     
     // a simple hierarchical set of nested objects and arrays where the 
@@ -49,6 +50,23 @@
         "value": 62,
         "unit": "ksi",
         "true": "http://pub.truenumbers.com/Numberflow?guid=e0affe26-59fc-447b-b033-9f3b72bc684e&base=e0affe26-59fc-447b-b033-9f3b72bc684e&core=eNqVkl1vmzAUhv+K5YtexQEMJEAzpKnarrLdrHdtFxkwwRs2zB/Juqr/vcchbKnUaZrki+Pj1+8557GfsHHVN15bXOD3vZNCOVnQkCbkpmdNcTOInjfkS8e5LW4TvMCjHkau7SPojdVc7W1XuN4KySwvLFcGLhRbL2TaGlBB2MAZRDSMUhJFhFIUroooggWHB9Y7Tuzj6CW35rOTFdeQFw3secjaltMVSfO2JkmyrkgVxjHJ27ha06peZQkHLXO2GzTomWa/muEIqc6q3f9YHDUbYTC4sEXnMdA8F5onRUOL/k0JCYM2ovxo3eb+PhDlBhCXWx/7AL1DKM0Q+m4ElK0HZflPT/8TFNKC9eY3FFw84XE4cg0Y76KHBf7hmLITUuhIqD3EYDU5SQbbNFtgrmGK0BOQPQguijkl/JPcYb99eJ4kuwPTiklP/+9N+4pcH058OmvHIghGVy2tdlydHsws60EG0+O1/ekF/viC6c5/iVP/4tXf8cZi98a4CwKLXgx9eWMePs7zLE9zGi/DMF4nObDYBxKZr3QGEi9nyVnx4Q1Ck2h1pSozXl9J0TSDvY5CQDCW2cYTGEtwRgEC71OWnrOvoO59Ud8esH1+AUTGCMw="
+    },
+    {
+      "subject": "Titanium:Ti-6Al-4V",
+      "qualifier": "Bar",
+      "property": "elongation",
+      "quantity": "magnitude",
+      "value": 0.16,
+      "unit": "lbm/in^3",
+      "true": "http://pub.truenumbers.com/Numberflow/?guid=a45555d9-bc47-4c21-b32d-923b2c3201de&base=a45555d9-bc47-4c21-b32d-923b2c3201de&core=eNqVkk1vwjAMhv9KFGk3Qpu2MBExJHbfTmgXQFXaBsjUJl0+YAzx3+eUlQlN2rSeHNt97fdJTtj64lWUDjO8kI4r6Ru2kGQ8r0n2wh65YXOlBK9FhQe4NboVxh2hWdRabbmTWoU8N85CEsKKOwFREtMRoZQkCYrHLB2xNIXintdeEHdsQ8vCPvumEAbysoIzz0bwVRNSlNk9ycqEkiJNKjJJ0iIpU1CsBPRy73bahH7DPyp9gNTOqfw/EgfDW/Bx4wLpDfoDAJIWTeUM/iyFctPVKpKzKeCbiRCHAD0gRGOE7mBIqZUT74HrEyAxkteW9ggwO+FWH4QBaEu6HuA3z5W7ALTOSLWFGISCTsPhQOMBFgY2joPbpobydZBXMsBf4ju8Pl/K+Z4bxZtA+feFwzxh9h2LnXMti6LWF0NnvFDd5dhhqZvoclGbuqP9rf0lnAemnQPZPQ3YGFbyHWor86vj3uRNvXcbDynq3UL80y4k8fn8Cdsb1JY="
+    },
+    {
+      "subject": "Titanium:Ti-6Al-4V",
+      "qualifier": "Bar",
+      "property": "mass density",
+      "value": 0.16,
+      "unit": "lbm/in^3",
+      "true": "http://pub.truenumbers.com/Numberflow/?guid=2c498a03-7863-4753-8ed5-e5e15cbb866f&base=2c498a03-7863-4753-8ed5-e5e15cbb866f&core=eNqVkslu4zAMhl9F0KGnKN4dV5MJ0Lm3p6CXLgFtK4mmluxqSZoWffdSWVCgC4reCPInRX6/Xqj19X/ROMrpXDrQ0is+l6y86Fh+zf+B4RdaC+hES0d0MP0gjNuhuBXaSrfjCqwNFTDOYhrDFpzAKI2TgiUJS1MSlzwreD7B4gY6L5jbDUEyt1de1cJgXrahpcnPK4gzNqnKjOWTImOVaAsmCpEUTV1XZblELXi37g3qwcBz228xtXZ68ZsRWwMDXoINYX9yPIb0S/IDBCItmcrZmZUrBX+mt7eRnJG/hMTjpCRdrUhEpJ5aP8yyUAwBPtf02omnwPgS4RgJnU1OMCh/oUO/FQbx3SQjlt2N6KMH7Q40rTNSrzA+vRBJfZ9hQQFmQ3JEhcFL4kBBdaj8epnTLl7L4NQNRUEAr+nd66F1sQGjQQVnPp4YFhFmsye2dm7gUTT4euyMF3pvoR03vYoOdi67vSfv046j6PEw+dUHsnLxI46PLSc0eZ5W40kV3C6ztIgT8rCK1DulT/XPyI6SAjuRmvoW2sMqDEVkr28I2fpx"
     },
     {
         "subject": "Aluminum:2024",
@@ -73,11 +91,19 @@
     },
     {
      "property": "compression modulus",
-     "subject": "Aluminum:2024-Clad",
-     "qualifier": "Coiled-Sheet:T4",
+     "subject": "Aluminum:2024",
+     "qualifier": "Coiled-Sheet",
      "value": 10.7,
      "unit": "ksi thousand",
       "true": "http://pub.truenumbers.com/Numberflow?guid=e6b6da12-ceb8-4931-8bf6-d8002a841e8f&base=e6b6da12-ceb8-4931-8bf6-d8002a841e8f&core=eNqVkk1v2zAMhv+KoENPcSzJqeO4WYChyHG7rLemC2RLibXakqePZF3R/z7KSVAPLVAUMCCKfEmRD/2MXah+ydrjEn9tQ6d06EpG2Cy5bbkob41qpUh+NFL68m6GJ7i3ppfWP4G+MyK0wZW16XornVNGRwG33kEUTMG9BIsRep1QmjCGSF5SWlIGwQNvg0z8Ux8ld+576Cppwa8E3GVe5YJTltSyKpLZIqNJUe3yRBSEMF7MqCx2oOXBN8aCnlv+V5gjuBqvt58pcbS8h4EgYTQGOo+GzA59TAUph5Zqta6Xm02qVugLQpRM5wg9OoWgweC4FvBUbbSXfyLpbwDGKt46egGBy2fcm6O0gO6eTujDBP8OXPsTSOet0nuwh7rjsg6iHYdQjEywtDAJiRS6FuTv9BETglZxRfcYAnB9DT28nFK3B2417+JmRoPFRqQ9DLAa7/syTftQTb0NUg/bc1NgmJ42uWuHdbwWWtf4PJMa/h6YSeq9b2JVtX0PQgIfG4EYZ1yAzKfZfJ4tSEayvFgU+bWkBD3u0w65n+zC5o1oTclbVmfVla5cf3PVKSGMv6Fk6UK/gmOTRgNqoxRB9cHNzt7/mO7js7FHwPnyDz90CdE="
+    },
+    {
+       "property": "compression modulus",
+     "subject": "Aluminum:2024",
+     "qualifier": "Bar",
+     "value": 10.7,
+     "unit": "ksi thousand",
+      "true": "http://pub.truenumbers.com/Numberflow?guid=b3a0c06c-ddb4-4a99-a4e7-e6d42ef314c8&base=b3a0c06c-ddb4-4a99-a4e7-e6d42ef314c8&core=eNqVUstu2zAQ/BWCh5wsi5RkyVZcAy3gY3vKLU4MSqRtNiKp8mE3DfLvXco2oiK+FBAgcmd2tDOrN+xC81O0Htf4axeU1EHVGcmK+huz9UM+o3iCe2t6Yf0rcJThoQuubo3qrXBOGh0JzHoHKBw58wJOGaGzhNIkyxApa1LUeQngkXVBJP61j5QH9yOoRlioSw73JmekJWWbcN4UScEWi4QVokpEyYtM7HJatHPgsuAPxgKfWfaHmxOUDl5v/0fiZFkPhqBhZANdrCGzQ7eTQNKhpVyt2+Vmk8oV+oIQJdMKoRcnEQwVHNMc5FujvfgdE/0OYVjJOkev5nH9hntzEhbieqQT+jTBvwLT/hye81bqPZwH3bGsA1QxgCIywcLC9CQ6Vx3Qb8wRG4KWcS2PGAC4fkBP7+fW7ZFZzVTcxshYHETY4xDQwfu+TtM+NFNvg9DDxtwUckvP29t1wwo+hNYtvniSwx8DnoTe+0NUldtbISTwZKMgxh3XQKppXlX5guQkL+eLeTkTlKCXfaqQe86u2XwirSn5nNWFdacb19/fKcm58feULF3oV/DapPEA2ihFoD6Us0v1n0z38bNxRojz/S+K6wFP"
     }
     ]
    
@@ -281,13 +307,21 @@ var svg = d3.select(".nodeGraph").append("svg")
         // Handle mouse moving over a data point
         // by enabling the tooltip.
         function mouseover(d) {
+          var leafLabel = '';
+          var node = d.parent;
+          for (i = 0; i < d.depth; i++)
+          {
+            leafLabel = node.key + ':' + leafLabel;
+            node = node.parent;
+          }
+           
             if ( d.value === 1 )
               {
-                var display = d.parent.parent.key + ':' +  d.parent.key + ' has ' + d.key;
+                var display = leafLabel + ' has ' + d.key + ' = ';
               }
             else
               {
-                var display = d.key + ": " + d.value + ' truenumbers';
+                var display = leafLabel + ':' + d.key + ": " + d.value + ' truenumbers';
               }
             tooltip.html(display
                 )
