@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Force Directed Graph" name="description">
+    <style>
+        .node circle {
+          cursor: pointer;
+          stroke: #3182bd;
+          stroke-width: 1.5px;
+        }
+
+        .node text {
+          font: 12px sans-serif;
+          pointer-events: none;
+          text-anchor: middle;
+        }
+
+        line.link {
+          fill: none;
+          stroke: #9ecae1;
+          stroke-width: 1.5px;
+        }
+    </style>
+</head>
+<body>
+  <div class="trueNum" style="border: 1px solid blue; width: 600px">
+    Truenumber: 
+    </div>
+    <div class="nodeGraph" maxwidth="600" style="float: left">
+    </div>
+    
+    <script src="js/d3.min.js"></script>
+    <script>
+    
+    // a simple hierarchical set of nested objects and arrays where the 
+    // subject or hierarchical category appear in the names of the nodes,
+    // properties appear in the name of the subnodes, the size is the number of times
+    // referenced ? (or something else), and the color could be something else.
+
+    var truenums =
+           {
+            "name": "isams-job-353",
+            "children": [],
+             "name": "metals",
+             "children": 
+             [
+                {
+                "name": "Steel 1465",
+                "children": 
+                    [
+                        {"name": "Density", "size": 5},
+                        {"name": "Coeff of Thermal Expansion", "size": 5},
+                        {"name": "Electrical Resistivity", "size": 5},
+                        {"name": "Melting Point", "size": 5},
+                    ]
+                },
+                {
+                "name": "Aluminum 1100",
+                "children": 
+                    [
+                        {
+                         "name": "bar",
+                             "children": 
+                             [
+                                {"name": "Density", "size": 5},
+                                {"name": "Coeff of Thermal Expansion", "size": 5},
+                                {"name": "Melting Point", "size": 5},
+                                {"name": "Thermal Conductivity", "size": 10}
+                             ]
+                        }
+                    ]
+                },
+                {
+                     "name": "Iron",
+                     "children": 
+                     [
+                        {"name": "Ductility", "size": 5}
+                     ]
+                }
+             ]
+            };
+
+var width = 600;
+var height = 400;
+var root;
+
+var force = d3.layout.force()
+    .linkDistance(function(d){ return d.target._children? 60 : 90; })//bostok's may want to make static
+    .charge(function(d){ return d.children ? -100 : -300; })
+    .gravity(.05)
+    .size([width, height])
+    .on("tick", tick);
+
+var svg = d3.select(".nodeGraph").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+//draw a box around the graph canvas so you can tell where the nodes 
+//will disappear if you drag them there
+svg.append('g')
+   .append('rect')
+   .attr("width", width)
+   .attr("height", height)
+   .attr('fill', 'none')
+   .style('stroke', '#000033')
+   .style('stroke-width', 2);
+
+var link = svg.selectAll(".link");
+var node = svg.selectAll(".node");
+
+function update(){
+
+var nodes = flatten(truenums);
+var links = d3.layout.tree().links(nodes);
+
+  // Restart the force layout.
+  force
+      .nodes(nodes)
+      .links(links)
+      .start();
+
+  // Update links.
+  link = link.data(links, function(d) { return d.target.id; });
+
+  link.exit().remove();
+
+  link.enter().insert("line", ".node")
+      .attr("class", "link");
+
+  // Update nodes.
+  node = node.data(nodes, function(d) { return d.id; });
+
+  node.exit().remove();
+
+  var nodeEnter = node.enter().append("g")
+      .attr("class", "node")
+      .on("click", click)
+      .call(force.drag);
+
+  var nodeCircles = nodeEnter.append("circle")
+      .attr("r", function(d)
+      {
+        //var collapsed = d.children ? 1 : 2; 
+       //var nodeSize = d.size || 12;
+       //d.r = collapsed*nodeSize;
+       d.r = d.children ? d.children.length * 5 : 6;
+       console.log('radius ', d.children, d.r);
+      return d.r; 
+      });
+
+ nodeCircles.transition()
+      .attr("r", function(d)
+                { 
+                  //if a node has children, draw it larger
+                  return d.children ? d.children.length * 4 : (d._children ? 10 : 6); 
+                }
+            );
+
+  nodeEnter.append("text")
+      .attr("dy", function(d) { return -d.r })
+      .text(function(d) { return d.name; });
+
+  node.select("circle")
+      .style("fill", color);
+} // end of update()
+
+//I took out the cute way that Bostok calls the update function using the 
+// d3 json loading command.  If we brought back the idea of reading data from
+// an outside file, which we likely would on the server, then we should go back
+// to that original implementation see http://bl.ocks.org/mbostock/1093130
+update();
+
+function tick() {
+  link.attr("x1", function(d) { return d.source.x; })
+      .attr("y1", function(d) { return d.source.y; })
+      .attr("x2", function(d) { return d.target.x; })
+      .attr("y2", function(d) { return d.target.y; });
+
+  node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+}
+
+function color(d) {
+  return d._children ? "#6c91ef" // collapsed package
+      : d.children ? "#c3d2f4" // expanded package
+      : "#e06f6c"; // leaf node
+}
+
+// Toggle children on click.
+function click(d) {
+  if (d3.event.defaultPrevented) return; // ignore drag
+  // if there are children, store them remove from display
+  if (d.children) {
+    d._children = d.children;
+    d.size = d.children.length * 3;
+    d.children = null;
+  } 
+  else if (d._children)
+  {
+    //or bring them back
+    d.children = d._children;
+    d.size = d._children.length * 2;
+    d._children = null;
+  }
+  else
+  {
+    //or display the truenumber because we are on a leaf node
+    d3.select('.trueNum').text(d.name + ' = ' + d.size);
+  }
+  update();
+}
+
+// Returns a list of all nodes under the root.
+function flatten(root) {
+  var nodes = [], i = 0;
+
+function recurse(node) {
+    if (node.children) 
+      {
+        node.size = node.children.reduce( function(p, v) { return p + recurse(v); }, 0);
+      }
+    if (!node.id) node.id = ++i;
+    nodes.push(node);
+    return node.size;
+  }
+
+  root.size = recurse(root);
+/*
+  function recurse(node) {
+    if (node.children) node.children.forEach(recurse);
+    if (!node.id) node.id = ++i;
+    nodes.push(node);
+  }
+
+  recurse(root);
+  */
+  return nodes;
+}
+
+</script>
+</body>
+</html>

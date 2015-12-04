@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Force Directed Graph" name="description">
+    <style>
+        .node circle {
+          cursor: pointer;
+          stroke: #3182bd;
+          stroke-width: 1.5px;
+        }
+
+        .node text {
+          font: 12px sans-serif;
+          pointer-events: none;
+          text-anchor: middle;
+        }
+
+        line.link {
+          fill: none;
+          stroke: #9ecae1;
+          stroke-width: 1.5px;
+        }
+    </style>
+</head>
+<body>
+  <div class="trueNum" style="border: 1px solid blue; width: 600px">
+    Truenumber: 
+    </div>
+    <div class="nodeGraph" maxwidth="600" style="float: left">
+    </div>
+    
+    <script src="js/d3.min.js"></script>
+    <script>
+    
+    // a simple hierarchical set of nested objects and arrays where the 
+    // subject or hierarchical category appear in the names of the nodes,
+    // properties appear in the name of the subnodes, the size is the number of times
+    // referenced ? (or something else), and the color could be something else.
+
+    var truenums = [
+    {
+        "subject": "Aluminum:2024",
+        "qualifier": "Bar",
+        //"description": "T351",
+        "property":  "L tensile ultimate strength",
+        "quantity": "strength",
+        "value": 62,
+        "unit": "ksi",
+        "true": "http://pub.truenumbers.com/Numberflow?guid=e0affe26-59fc-447b-b033-9f3b72bc684e&base=e0affe26-59fc-447b-b033-9f3b72bc684e&core=eNqVkl1vmzAUhv+K5YtexQEMJEAzpKnarrLdrHdtFxkwwRs2zB/Juqr/vcchbKnUaZrki+Pj1+8557GfsHHVN15bXOD3vZNCOVnQkCbkpmdNcTOInjfkS8e5LW4TvMCjHkau7SPojdVc7W1XuN4KySwvLFcGLhRbL2TaGlBB2MAZRDSMUhJFhFIUroooggWHB9Y7Tuzj6CW35rOTFdeQFw3secjaltMVSfO2JkmyrkgVxjHJ27ha06peZQkHLXO2GzTomWa/muEIqc6q3f9YHDUbYTC4sEXnMdA8F5onRUOL/k0JCYM2ovxo3eb+PhDlBhCXWx/7AL1DKM0Q+m4ElK0HZflPT/8TFNKC9eY3FFw84XE4cg0Y76KHBf7hmLITUuhIqD3EYDU5SQbbNFtgrmGK0BOQPQguijkl/JPcYb99eJ4kuwPTiklP/+9N+4pcH058OmvHIghGVy2tdlydHsws60EG0+O1/ekF/viC6c5/iVP/4tXf8cZi98a4CwKLXgx9eWMePs7zLE9zGi/DMF4nObDYBxKZr3QGEi9nyVnx4Q1Ck2h1pSozXl9J0TSDvY5CQDCW2cYTGEtwRgEC71OWnrOvoO59Ud8esH1+AUTGCMw="
+    },
+    {
+        "subject": "Aluminum:2024",
+        "qualifier": "Bar",
+        //"description": "T351",
+        "property":  "ST tensile ultimate strength",
+        "quantity": "strength",
+        "value": 62,
+        "unit": "ksi",
+        "true": "http://pub.truenumbers.com/Numberflow?guid=e0affe26-59fc-447b-b033-9f3b72bc684e&base=e0affe26-59fc-447b-b033-9f3b72bc684e&core=eNqVkl1vmzAUhv+K5YtexQEMJEAzpKnarrLdrHdtFxkwwRs2zB/Juqr/vcchbKnUaZrki+Pj1+8557GfsHHVN15bXOD3vZNCOVnQkCbkpmdNcTOInjfkS8e5LW4TvMCjHkau7SPojdVc7W1XuN4KySwvLFcGLhRbL2TaGlBB2MAZRDSMUhJFhFIUroooggWHB9Y7Tuzj6CW35rOTFdeQFw3secjaltMVSfO2JkmyrkgVxjHJ27ha06peZQkHLXO2GzTomWa/muEIqc6q3f9YHDUbYTC4sEXnMdA8F5onRUOL/k0JCYM2ovxo3eb+PhDlBhCXWx/7AL1DKM0Q+m4ElK0HZflPT/8TFNKC9eY3FFw84XE4cg0Y76KHBf7hmLITUuhIqD3EYDU5SQbbNFtgrmGK0BOQPQguijkl/JPcYb99eJ4kuwPTiklP/+9N+4pcH058OmvHIghGVy2tdlydHsws60EG0+O1/ekF/viC6c5/iVP/4tXf8cZi98a4CwKLXgx9eWMePs7zLE9zGi/DMF4nObDYBxKZr3QGEi9nyVnx4Q1Ck2h1pSozXl9J0TSDvY5CQDCW2cYTGEtwRgEC71OWnrOvoO59Ud8esH1+AUTGCMw="
+    },
+     {
+        "subject": "Aluminum:2024",
+        "qualifier": "Bar",
+       //"description": "T351",
+        "property":  "elongation",
+        "quantity": "magnitude",
+        "value": 10,
+        "unit": "%",
+        "true": "http://pub.truenumbers.com/Numberflow?guid=e0affe26-59fc-447b-b033-9f3b72bc684e&base=e0affe26-59fc-447b-b033-9f3b72bc684e&core=eNqVkl1vmzAUhv+K5YtexQEMJEAzpKnarrLdrHdtFxkwwRs2zB/Juqr/vcchbKnUaZrki+Pj1+8557GfsHHVN15bXOD3vZNCOVnQkCbkpmdNcTOInjfkS8e5LW4TvMCjHkau7SPojdVc7W1XuN4KySwvLFcGLhRbL2TaGlBB2MAZRDSMUhJFhFIUroooggWHB9Y7Tuzj6CW35rOTFdeQFw3secjaltMVSfO2JkmyrkgVxjHJ27ha06peZQkHLXO2GzTomWa/muEIqc6q3f9YHDUbYTC4sEXnMdA8F5onRUOL/k0JCYM2ovxo3eb+PhDlBhCXWx/7AL1DKM0Q+m4ElK0HZflPT/8TFNKC9eY3FFw84XE4cg0Y76KHBf7hmLITUuhIqD3EYDU5SQbbNFtgrmGK0BOQPQguijkl/JPcYb99eJ4kuwPTiklP/+9N+4pcH058OmvHIghGVy2tdlydHsws60EG0+O1/ekF/viC6c5/iVP/4tXf8cZi98a4CwKLXgx9eWMePs7zLE9zGi/DMF4nObDYBxKZr3QGEi9nyVnx4Q1Ck2h1pSozXl9J0TSDvY5CQDCW2cYTGEtwRgEC71OWnrOvoO59Ud8esH1+AUTGCMw="
+
+    },
+    {
+     "property": "compression modulus",
+     "subject": "Aluminum:2024-Clad",
+     "qualifier": "Coiled-Sheet:T4",
+     "value": 10.7,
+     "unit": "ksi thousand",
+      "true": "http://pub.truenumbers.com/Numberflow?guid=e6b6da12-ceb8-4931-8bf6-d8002a841e8f&base=e6b6da12-ceb8-4931-8bf6-d8002a841e8f&core=eNqVkk1v2zAMhv+KoENPcSzJqeO4WYChyHG7rLemC2RLibXakqePZF3R/z7KSVAPLVAUMCCKfEmRD/2MXah+ydrjEn9tQ6d06EpG2Cy5bbkob41qpUh+NFL68m6GJ7i3ppfWP4G+MyK0wZW16XornVNGRwG33kEUTMG9BIsRep1QmjCGSF5SWlIGwQNvg0z8Ux8ld+576Cppwa8E3GVe5YJTltSyKpLZIqNJUe3yRBSEMF7MqCx2oOXBN8aCnlv+V5gjuBqvt58pcbS8h4EgYTQGOo+GzA59TAUph5Zqta6Xm02qVugLQpRM5wg9OoWgweC4FvBUbbSXfyLpbwDGKt46egGBy2fcm6O0gO6eTujDBP8OXPsTSOet0nuwh7rjsg6iHYdQjEywtDAJiRS6FuTv9BETglZxRfcYAnB9DT28nFK3B2417+JmRoPFRqQ9DLAa7/syTftQTb0NUg/bc1NgmJ42uWuHdbwWWtf4PJMa/h6YSeq9b2JVtX0PQgIfG4EYZ1yAzKfZfJ4tSEayvFgU+bWkBD3u0w65n+zC5o1oTclbVmfVla5cf3PVKSGMv6Fk6UK/gmOTRgNqoxRB9cHNzt7/mO7js7FHwPnyDz90CdE="
+    }
+    ]
+   
+var width = 600;
+var height = 600;
+var radius = Math.min(width, height) / 2;
+
+var svg = d3.select(".nodeGraph").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append('g')
+    .attr("transform", "translate(" +
+                    (width  / 2) + "," +
+                    (height / 2) + ")");
+  //.style('stroke', '#000033')
+  // .style('stroke-width', 2)
+   ;
+
+ // Define the scales that will translate data values
+        // into visualization properties. The "x" scale
+        // will represent angular position within the
+        // visualization, so it ranges lnearly from 0 to
+        // 2π. The "y" scale will reprent area, so it
+        // ranges from 0 to the full radius of the
+        // visualization. Since area varies as the square
+        // of the radius, this scale takes the square
+        // root of the input domain before mapping to
+        // the output range.
+        var x = d3.scale.linear()
+            .range([0, 2 * Math.PI]);
+        var y = d3.scale.sqrt()
+            .range([0, radius]);
+
+        // Define the function that creates a partition
+        // layout from the dataset. Because we're using
+        // `d3.nest` to construct the input dataset, the
+        // children array will be stored in the `values`
+        // property unless the node is a leaf node. In
+        // that case the `values` property will hold
+        // the data value itself.
+        var partition = d3.layout.partition()
+            .children(function(d) {
+                return Array.isArray(d.values) ?
+                    d.values : null;
+            })
+            .value(function(d) {
+                return d.values;
+            });
+
+        // Define a function that returns the color
+        // for a data point. The input parameter
+        // should be a data point as defined/created
+        // by the partition layout.
+        var color = function(d) {
+
+            // This function builds the total
+            // color palette incrementally so
+            // we don't have to iterate through
+            // the entire data structure.
+
+            // We're going to need a color scale.
+            // Normally we'll distribute the colors
+            // in the scale to child nodes.
+            var colors;
+
+            // The root node is special since
+            // we have to seed it with our
+            // desired palette.
+            if (!d.parent) {
+
+                // Create a categorical color
+                // scale to use both for the
+                // root node's immediate
+                // children. We're using the
+                // 10-color predefined scale,
+                // so set the domain to be
+                // [0, ... 9] to ensure that
+                // we can predictably generate
+                // correct individual colors.
+                colors = d3.scale.category10()
+                    .domain(d3.range(0,10));
+
+                // White for the root node
+                // itself.
+                d.color = "#fff";
+
+            } else if (d.children) {
+
+                // Since this isn't the root node,
+                // we construct the scale from the
+                // node's assigned color. Our scale
+                // will range from darker than the
+                // node's color to brigher than the
+                // node's color.
+                var startColor = d3.hcl(d.color)
+                                    .darker(),
+                    endColor   = d3.hcl(d.color)
+                                    .brighter();
+
+                // Create the scale
+                colors = d3.scale.linear()
+                        .interpolate(d3.interpolateHcl)
+                        .range([
+                            startColor.toString(),
+                            endColor.toString()
+                        ])
+                        .domain([ 0, d.children.length + 1 ]);
+
+            }
+
+            if (d.children) {
+
+                // Now distribute those colors to
+                // the child nodes. We want to do
+                // it in sorted order, so we'll
+                // have to calculate that. Because
+                // JavaScript sorts arrays in place,
+                // we use a mapped version.
+                d.children.map(function(child, i) {
+                    return {value: child.value, idx: i};
+                }).sort(function(a,b) {
+                    return b.value - a.value
+                }).forEach(function(child, i) {
+                    d.children[child.idx].color = colors(i);
+                });
+            }
+
+            return d.color;
+        };
+
+        // Define the function that constructs the
+        // path for an arc corresponding to a data
+        // value.
+        var arc = d3.svg.arc()
+            .startAngle(function(d) {
+                return Math.max(0,
+                    Math.min(2 * Math.PI, x(d.x)));
+            })
+            .endAngle(function(d) {
+                return Math.max(0,
+                    Math.min(2 * Math.PI, x(d.x + d.dx)));
+            })
+            .innerRadius(function(d) {
+                return Math.max(0, y(d.y));
+            })
+            .outerRadius(function(d) {
+                return Math.max(0, y(d.y + d.dy));
+            });
+
+        // Extract the hierachy from the raw data
+        // Using `d3.nest` operations. The data's
+        // hierarchy is subject -> qualifier -> description.
+        // At the description level, we're only interested
+        // in a count of the data points.
+        var hierarchy = {
+            key: "Metals",
+            values: d3.nest()
+                .key(function(d) { return d.subject; })
+                .key(function(d) { return d.qualifier; })
+                .key(function(d) { return d.property; })
+                .rollup(function(leaves) {
+                    return leaves.length;
+                })
+                .entries(truenums)
+        };
+
+        // Construct the visualization.
+        var path = svg.selectAll("path")
+            .data(partition.nodes(hierarchy))
+          .enter().append("path")
+            .attr("d", arc)
+            .attr("stroke", "#fff")
+            .attr("fill-rule", "evenodd")
+            .attr("fill", color)
+            .on("click", click)
+            .on("mouseover", mouseover)
+            .on("mouseout", mouseout);
+
+        // Add a container for the tooltip.
+        var tooltip = d3.select('.trueNum').html("text")
+            //.attr("font-size", 12)
+            //.attr("fill", "#000")
+            //.attr("fill-opacity", 0)
+            //.attr("text-anchor", "middle")
+            //.attr("transqualifier", "translate(" + 0 + "," + (12 + height/2)  +")")
+            .style("pointer-events", "none");
+
+        // Handle clicks on data points. All
+        // we need to do is start the transition
+        // that updates the paths of the arcs.
+        function click(d) {
+            path.transition()
+                .duration(750)
+                .attrTween("d", arcTween(d));
+            // Hide the tooltip since the
+            // path "underneath" the cursor
+            // will likely have changed.
+            mouseout();
+        };
+
+        // Handle mouse moving over a data point
+        // by enabling the tooltip.
+        function mouseover(d) {
+            if ( d.value === 1 )
+              {
+                var display = d.parent.parent.key + ':' +  d.parent.key + ' has ' + d.key;
+              }
+            else
+              {
+                var display = d.key + ": " + d.value + ' truenumbers';
+              }
+            tooltip.html(display
+                )
+                .transition()
+                .attr("fill-opacity", 1);
+        };
+        // Handle mouse leaving a data point
+        // by disabling the tooltip.
+        function mouseout() {
+            tooltip.transition()
+                .attr("fill-opacity", 0);
+        };
+
+        // Function to interpolate values for
+        // the visualization elements during
+        // a transition.
+        function arcTween(d) {
+            var xd = d3.interpolate(x.domain(),
+                        [d.x, d.x + d.dx]),
+                yd = d3.interpolate(y.domain(),
+                        [d.y, 1]),
+                yr = d3.interpolate(y.range(),
+                        [d.y ? 20 : 0, radius]);
+            return function(d, i) {
+                return i ?
+                    function(t) {
+                        return arc(d);
+                    } :
+                    function(t) {
+                        x.domain(xd(t));
+                        y.domain(yd(t)).range(yr(t));
+                        return arc(d);
+                    };
+            };
+        }
+
+
+</script>
+</body>
+</html>
